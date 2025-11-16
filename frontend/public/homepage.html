@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Jung Kook</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> <!--For Calender Icon-->
+</head>
+<body>
+  <div class="navbar">
+    <h2><i class="fa-solid fa-calendar-days"></i> Jung Kook</h2>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+    <h3 id="greeting"></h3>
+    <h3>Book a Room</h3>
+    <form onsubmit="event.preventDefault(); createBooking();">
+      <select id="location" required>
+        <option value="">Select Location</option>
+        <option value="Gym A">Room A</option>
+        <option value="Gym B">Room B</option>
+        <option value="Gym C">Room C</option>
+      </select>
+
+      <input type="text" id="room" placeholder="Room name" required />
+      <label for="date" style="margin-top:0.5rem; color:#ff9900
+      ; font-weight:bold;">Date</label>
+      <input type="date" id="date" required />
+      <label style="margin-top:0.5rem; color:#ff9900
+      ; font-weight:bold;">Start Time</label>
+      <ul id="startTimeList" class="time-list"></ul>
+      <label style="margin-top:0.5rem; color:#ff9900
+      ; font-weight:bold;">End Time</label>
+      <ul id="endTimeList" class="time-list"></ul>
+      <button type="submit">Book Now</button>
+    </form>
+
+    <h3>Your Bookings</h3>
+    <ul id="booking-list"></ul>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('username');
+      window.location.href = 'login.html';
+    }
+
+    // Set greeting
+    document.addEventListener('DOMContentLoaded', function() {
+      const username = localStorage.getItem('username') || '';
+      if(username) {
+        document.getElementById('greeting').textContent = `Hello, ${username}`;
+      }
+      // Populate time slot lists
+      const startList = document.getElementById('startTimeList');
+      const endList = document.getElementById('endTimeList');
+      for(let hour=9; hour<=20; hour++) {
+        const timeStr = hour.toString().padStart(2, '0') + ':00';
+        const startLi = document.createElement('li');
+        startLi.textContent = timeStr;
+        startLi.className = 'time-slot';
+        startLi.onclick = function() {
+          document.querySelectorAll('#startTimeList .selected').forEach(el => el.classList.remove('selected'));
+          startLi.classList.add('selected');
+        };
+        startList.appendChild(startLi);
+        const endLi = document.createElement('li');
+        endLi.textContent = timeStr;
+        endLi.className = 'time-slot';
+        endLi.onclick = function() {
+          document.querySelectorAll('#endTimeList .selected').forEach(el => el.classList.remove('selected'));
+          endLi.classList.add('selected');
+        };
+        endList.appendChild(endLi);
+      }
+    });
+  </script>
+  <script src="js/homepage.js"></script>
+</body>
+</html>

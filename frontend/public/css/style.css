@@ -1,0 +1,418 @@
+/* frontend/public/css/style.css */
+/* Premium Gym Theme (Warm Gold/Orange Accents & Dark Text/Backgrounds) */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  /* Darker background for a premium feel */
+  background-color: #1e1e1e; 
+  color: #f8f8f8; /* Light text for dark background */
+  line-height: 1.6;
+  
+  /* ADDED: Background image for the entire body to match the gym theme */
+  background-image: url('../img/gym-background.jpg');
+  background-size: cover; /* ครอบคลุมพื้นที่ทั้งหมด */
+  background-position: center; /* จัดตำแหน่งตรงกลาง */
+  background-attachment: fixed; /* ทำให้ภาพนิ่งขณะเลื่อน */
+
+  /* needed for ::before overlay */
+  position: relative;
+  overflow-x: hidden;
+
+}
+
+/*Blur Background*/
+body::before { /*Invisible layer attached to <body>*/
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image: inherit;     /* reuse body background */
+  background-size: inherit;
+  background-position: inherit;
+  background-attachment: inherit;
+
+
+  filter: brightness(0.55) blur(3px); /* DIM + BLUR */
+  z-index: -1;                       /* keep layer behind everything */
+}
+
+/* --- Global Header & Navbar --- */
+
+header {
+  /* Dark background for contrast with text (Adjusted for slight transparency) */
+  background: rgba(40, 40, 40, 0.95);
+  color: #f8f8f8;
+  text-align: center;
+  padding: 2rem 1rem;
+  border-bottom: 2px solid #3d3d3d;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+  margin-bottom: 0;
+}
+
+header h1 {
+  font-family: inherit;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-transform: none;
+  /* Accent color: Warm Gold/Orange */
+  color: #ff9900; 
+  text-shadow: 0 0 5px rgba(255, 153, 0, 0.5); /* Subtle glow */
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+header h1::before,
+header h1::after {
+  display: none;
+}
+
+nav {
+  margin-top: 1rem;
+}
+
+nav button {
+  margin: 0 0.5rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid #ff9900; /* Accent border */
+  background: #1e1e1e; /* Dark button background */
+  color: #ff9900; /* Accent text color */
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+  letter-spacing: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  text-transform: none;
+  outline: none;
+}
+
+nav button:hover {
+  background: #ff9900; /* Accent background on hover */
+  color: #1e1e1e; /* Dark text on hover */
+  border-color: #ff9900;
+  transform: none;
+}
+
+main {
+  padding: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* --- Intro Section (Index Page) --- */
+
+.intro {
+  /* Adjusted for slight transparency */
+  background: rgba(40, 40, 40, 0.9); 
+  color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  padding: 2.5rem 2rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  text-align: center;
+  font-family: inherit;
+  letter-spacing: 0;
+}
+
+.intro h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #ff9900; /* Accent color */
+  text-shadow: none;
+}
+
+.intro p {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #bbb; /* Lighter grey for body text */
+  text-shadow: none;
+}
+
+/* --- Container (Auth Forms & Dashboard) --- */
+
+.container {
+  /* Adjusted for slight transparency */
+  background: rgba(40, 40, 40, 0.9); 
+  color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  margin: 2rem auto;
+  width: auto;
+  min-height: auto;
+  max-width: 600px;
+  text-align: center;
+  font-family: inherit;
+  letter-spacing: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start;
+}
+
+@media (max-width: 700px) {
+  .container {
+    padding: 1.5rem 1rem;
+    margin: 1rem auto;
+  }
+}
+
+.container h1,
+.container h2,
+.container h3 {
+  color: #ff9900; /* Accent color for main headings */
+  text-shadow: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+.container h3#greeting {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #f8f8f8; /* White/Light text for greeting */
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.container p,
+.container label {
+  color: #f8f8f8; /* White/Light text */
+  font-weight: 600;
+  text-shadow: none;
+}
+
+/* Style for links inside containers */
+.container p a {
+  color: #ff9900; /* Accent link color */
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.container p a:hover {
+  text-decoration: none;
+}
+
+/* Style for the 'back to home' link */
+.container .back-link {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+.container .back-link a {
+  color: #aaa; /* Soft grey link */
+  font-weight: 600;
+  text-decoration: none;
+}
+.container .back-link a:hover {
+  text-decoration: underline;
+}
+
+/* --- Form Elements --- */
+
+form input,
+form select {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #444; /* Darker border */
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #383838; /* Dark input background */
+  color: #f8f8f8; /* Light input text */
+  box-shadow: none;
+  outline: none;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+/* Placeholder text color */
+form input::placeholder {
+    color: #bbb;
+}
+
+form input:focus,
+form select:focus {
+  /* Accent focus glow */
+  box-shadow: 0 0 0 2px #ff9900; 
+  border: 1px solid #ff9900;
+}
+
+form button,
+.container button,
+.navbar button,
+ul#booking-list button {
+  background: #ff9900; /* Accent button background */
+  color: #1e1e1e; /* Dark button text */
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: 0;
+  box-shadow: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+form button:hover,
+.container button:hover,
+.navbar button:hover,
+ul#booking-list button:hover {
+  background: #ffa520; /* Slightly lighter accent on hover */
+  color: #1e1e1e;
+}
+
+/* --- Booking List --- */
+
+ul#booking-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: none;
+  box-shadow: none;
+}
+ul#booking-list li {
+  background: #383838; /* Dark list item background */
+  color: #f8f8f8;
+  border-radius: 8px;
+  margin: 0;
+  padding: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  word-break: break-word;
+  border: 1px solid #444;
+  position: relative;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+ul#booking-list li span {
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: #f8f8f8; /* Light text color */
+}
+/* Override the inline style from homepage.js for location */
+ul#booking-list li > span:first-child { 
+    font-size: 2rem !important; 
+    font-weight: bold !important; 
+    color: #ff9900 !important; /* Accent color for Location */
+}
+
+ul#booking-list button {
+  align-self: flex-end;
+  margin-top: 1rem;
+  margin-left: 0;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  /* Make delete button slightly less prominent than main buttons */
+  background: #555; 
+  color: #f8f8f8; 
+}
+ul#booking-list button:hover {
+    background: #777;
+}
+
+/* --- Navbar (Dashboard) --- */
+
+.navbar {
+  /* Adjusted for slight transparency */
+  background: rgba(40, 40, 40, 0.95); 
+  color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0;
+  gap: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+.navbar h2 {
+  font-family: inherit;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ff9900; /* Accent color */
+  text-shadow: none;
+  margin: 0;
+}
+
+.navbar button {
+  padding: 0.6rem 1.2rem;
+  margin: 0;
+  margin-left: auto;
+  background: #ff9900; /* Accent color for Logout button */
+  color: #1e1e1e;
+}
+
+.navbar button:hover {
+    background: #ffa520;
+}
+
+/* --- Time Slots --- */
+
+.time-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  max-width: 400px;
+}
+.time-slot {
+  background: #383838; /* Dark slot background */
+  color: #f8f8f8;
+  border: 2px solid #555; /* Neutral border */
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  user-select: none;
+}
+.time-slot.selected,
+.time-slot:hover {
+  background: #ff9900; /* Accent on hover/select */
+  color: #1e1e1e; /* Dark text on accent background */
+  border: 2px solid #ff9900;
+}
