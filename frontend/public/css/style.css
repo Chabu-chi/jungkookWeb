@@ -416,3 +416,36 @@ ul#booking-list button:hover {
   color: #1e1e1e; /* Dark text on accent background */
   border: 2px solid #ff9900;
 }
+
+  /* Make the slot list centered */
+  .time-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;  /* <-- centers the slots horizontally */
+    gap: 8px;                 /* space between slots */
+    margin: 1rem 0;           /* optional spacing */
+  }
+
+  /* Individual slots */
+  .time-list li {
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    background: #222;
+    color: #fff;
+    user-select: none;
+    text-align: center;       /* centers text inside the slot */
+  }
+
+  /* Selected state */
+  .time-list li.selected {
+    outline: 3px solid #ff9900;
+  }
+
+  /* Disabled state */
+  .time-list li.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }

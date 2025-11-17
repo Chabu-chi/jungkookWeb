@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:3222/api";
+import dotenv from 'dotenv';
+
+const API_URL = process.env.BACKEND_URL+"/api";
 
 async function registerUser() {
   const username = document.getElementById('username').value;

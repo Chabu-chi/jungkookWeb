@@ -1,34 +1,29 @@
-const API_URL = "http://localhost:3222/api";
+// js/homepage.js
+import dotenv from 'dotenv';
+
+const API_URL = process.env.BACKEND_URL+"/api";
 const username = localStorage.getItem('username');
 
 async function loadBookings() {
-  const res = await fetch(`${API_URL}/bookings?username=${username}`, {
-    headers: { 
-      'Content-Type': 'application/json',
-    },
-  });
-  const bookings = await res.json();
-
-  const list = document.getElementById('booking-list');
-  list.innerHTML = '';
-  try{
+  if (!username) return;
+  try {
+    const res = await fetch(`${API_URL}/bookings?username=${encodeURIComponent(username)}`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const bookings = await res.json();
+    const list = document.getElementById('booking-list');
+    list.innerHTML = '';
     bookings.forEach(b => {
+      // prefer date+slot, fallback to startTime/endTime formatting
+      const dateStr = b.date || (b.startTime ? new Date(b.startTime).toISOString().slice(0,10) : '');
+      const slot = b.slot || (b.startTime && b.endTime ? 
+        `${new Date(b.startTime).toTimeString().slice(0,5)}-${new Date(b.endTime).toTimeString().slice(0,5)}` : '');
       const item = document.createElement('li');
-      // Format date as DD/MM/YY
-      const d = new Date(b.startTime);
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = String(d.getFullYear()).slice(-2);
-      const dateStr = `${day}/${month}/${year}`;
-      const startTime = new Date(b.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const endTime = new Date(b.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       item.innerHTML = `
-        <span style="font-size:2rem;font-weight:bold;color:#ffe600;">${b.location}</span><br>
-        <span style="color:#fff;">Room:</span> <span style="font-weight:bold;">${b.room}</span><br>
+        <span style="font-size:1.25rem;font-weight:bold;color:#ffe600;">${b.location || ''} - ${b.room}</span><br>
         <span style="color:#fff;">Date:</span> <span style="font-weight:bold;">${dateStr}</span><br>
-        <span style="color:#fff;">Time:</span> <span style="font-weight:bold;">${startTime} - ${endTime}</span>
+        <span style="color:#fff;">Time:</span> <span style="font-weight:bold;">${slot}</span>
       `;
-      // Add delete button
       const delBtn = document.createElement('button');
       delBtn.textContent = 'Delete';
       delBtn.style.marginLeft = '10px';
@@ -36,58 +31,95 @@ async function loadBookings() {
       item.appendChild(delBtn);
       list.appendChild(item);
     });
-  }catch(e){
-    console.error('Error loading bookings:', e);}
+  } catch (e) {
+    console.error('Error loading bookings:', e);
+  }
+}
+
+async function refreshAvailability() {
+  // enable all slots first
+  document.querySelectorAll('#slotList .slot-item').forEach(el => {
+    el.classList.remove('disabled', 'selected');
+  });
+
+  const date = document.getElementById('date').value;
+  const room = document.getElementById('room').value;
+  if (!date || !room) return;
+
+  try {
+    const res = await fetch(`${API_URL}/bookings?date=${encodeURIComponent(date)}&room=${encodeURIComponent(room)}`);
+    if (!res.ok) {
+      console.warn('No availability response');
+      return;
+    }
+    const bookings = await res.json();
+    // bookings contain booked slot strings
+    const bookedSlots = new Set(bookings.map(b => b.slot).filter(Boolean));
+    document.querySelectorAll('#slotList .slot-item').forEach(el => {
+      if (bookedSlots.has(el.dataset.slot)) {
+        el.classList.add('disabled');
+      }
+    });
+  } catch (e) {
+    console.error('Error fetching availability:', e);
+  }
 }
 
 async function createBooking() {
   const location = document.getElementById('location').value;
   const room = document.getElementById('room').value;
   const date = document.getElementById('date').value;
-  const startTimeEl = document.querySelector('#startTimeList .selected');
-  const endTimeEl = document.querySelector('#endTimeList .selected');
-  if (!date || !startTimeEl || !endTimeEl) {
-    alert('Please select date, start time, and end time.');
-    return;
-  }
-  const startTime = date + 'T' + startTimeEl.textContent;
-  const endTime = date + 'T' + endTimeEl.textContent;
-  // Check that startTime is before endTime
-  if (new Date(startTime) >= new Date(endTime)) {
-    alert('Start time must be before end time.');
-    return;
-  }
-  const res = await fetch(`${API_URL}/bookings`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, location, room, startTime, endTime })
-  });
-  if(res.status === 409){
-    const data = await res.json();
-    alert(data.message);
+  const slotEl = document.querySelector('#slotList .selected');
+
+  if (!location || !room || !date || !slotEl) {
+    alert('Please select location, room, date and a 1-hour slot.');
     return;
   }
 
-  // Clear the form
-  document.getElementById('location').selectedIndex = 0;
-  document.getElementById('room').value = '';
-  document.getElementById('date').value = '';
-  document.querySelectorAll('#startTimeList .selected').forEach(el => el.classList.remove('selected'));
-  document.querySelectorAll('#endTimeList .selected').forEach(el => el.classList.remove('selected'));
+  const slot = slotEl.dataset.slot;
 
-  loadBookings();
+  try {
+    const res = await fetch(`${API_URL}/bookings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, location, room, date, slot })
+    });
+
+    if (res.status === 409) {
+      const data = await res.json();
+      alert(data.message || 'Slot already booked');
+      await refreshAvailability();
+      return;
+    }
+    if (!res.ok) {
+      const data = await res.json().catch(()=>({message:'Unknown error'}));
+      alert(`Failed to create booking: ${data.message}`);
+      return;
+    }
+
+    // Reset form
+    document.getElementById('location').selectedIndex = 0;
+    document.getElementById('room').selectedIndex = 0;
+    document.getElementById('date').value = '';
+    document.querySelectorAll('#slotList .selected').forEach(el => el.classList.remove('selected'));
+    await loadBookings();
+  } catch (e) {
+    console.error('Error creating booking:', e);
+    alert('Server error creating booking');
+  }
 }
 
 async function deleteBooking(id) {
-  await fetch(`${API_URL}/bookings/${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  loadBookings();
+  try {
+    await fetch(`${API_URL}/bookings/${id}`, { method: 'DELETE' });
+    await loadBookings();
+    // refresh availability if a date+room currently selected
+    await refreshAvailability();
+  } catch (e) {
+    console.error('Error deleting booking:', e);
+  }
 }
 
-window.onload = loadBookings;
+window.onload = function() {
+  loadBookings();
+};
