@@ -1,6 +1,5 @@
-import dotenv from 'dotenv';
+export const API_URL = 'http://34.226.192.217:3222/api';
 
-const API_URL = process.env.BACKEND_URL+"/api";
 
 async function registerUser() {
   const username = document.getElementById('username').value;
@@ -14,7 +13,7 @@ async function registerUser() {
   const data = await res.json();
   if (res.ok) {
     localStorage.setItem('username', data.username);
-    window.location.href = 'homepage.html';
+    window.location.href = 'login.html';
   } else {
     alert(data.message);
   }
@@ -40,3 +39,6 @@ async function loginUser() {
     alert(data.message);
   }
 }
+
+window.registerUser = registerUser;
+window.loginUser = loginUser;

@@ -1,7 +1,6 @@
 // js/homepage.js
-import dotenv from 'dotenv';
-
-const API_URL = process.env.BACKEND_URL+"/api";
+import { API_URL } from "./auth.js";
+const API_URL = API_URL || 'http://localhost:3222/api';
 const username = localStorage.getItem('username');
 
 async function loadBookings() {
