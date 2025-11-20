@@ -1,6 +1,5 @@
 // js/homepage.js
-import { API_URL } from "./auth.js";
-const API_URL = API_URL || 'http://localhost:3222/api';
+const API_URL = "http://54.146.227.9:3222/api";
 const username = localStorage.getItem('username');
 
 async function loadBookings() {
@@ -51,18 +50,40 @@ async function refreshAvailability() {
       console.warn('No availability response');
       return;
     }
+
     const bookings = await res.json();
-    // bookings contain booked slot strings
     const bookedSlots = new Set(bookings.map(b => b.slot).filter(Boolean));
+
+    // disable slots already booked
     document.querySelectorAll('#slotList .slot-item').forEach(el => {
       if (bookedSlots.has(el.dataset.slot)) {
         el.classList.add('disabled');
       }
     });
+
+    // --- disable past slots if selected date = today ---
+    const today = new Date();
+    const selectedDate = new Date(date);
+    if (
+      selectedDate.getFullYear() === today.getFullYear() &&
+      selectedDate.getMonth() === today.getMonth() &&
+      selectedDate.getDate() === today.getDate()
+    ) {
+      const currentHour = today.getHours();
+
+      document.querySelectorAll('#slotList .slot-item').forEach(el => {
+        const [startHour] = el.dataset.slot.split('-')[0].split(':').map(Number);
+        if (startHour <= currentHour) {
+          el.classList.add('disabled');
+        }
+      });
+    }
+
   } catch (e) {
     console.error('Error fetching availability:', e);
   }
 }
+
 
 async function createBooking() {
   const location = document.getElementById('location').value;
